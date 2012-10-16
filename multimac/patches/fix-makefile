@@ -1,0 +1,23 @@
+Index: multimac-1.0.3/Makefile
+===================================================================
+--- multimac-1.0.3.orig/Makefile
++++ multimac-1.0.3/Makefile
+@@ -1,16 +1,10 @@
+-CC=gcc
+-CFLAGS=-g -O -Wall -I.. -D_REENTRANT
+-LIBPTHREAD=-lpthread
++LDFLAGS += -lpthread
+ 
+ PROGS=multimac
+ 
+ all: $(PROGS)
+ 
+-.c:
+-	$(CC) $(CFLAGS) -o $* $*.c $(LIBPTHREAD)
+-#	killall multimac || true
+-
+-$(PROGS):
++$(PROGS) : $(PROGS).o
+ 
+ clean:
+ 	rm -f $(PROGS)
