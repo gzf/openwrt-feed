@@ -28,9 +28,9 @@ direct_mount() {
     config_get label "$cfg" label
     config_get uuid "$cfg" uuid
     if [ -n "$uuid" ] && blkid | grep -q UUID=\"$uuid\"; then
-        device=`blkid | grep UUID=\"$uuid\" | awk -F: '{print $1}'`
+        device=`blkid -U $uuid`
     elif [ -n "$label" ] && blkid | grep -q LABEL=\"$label\"; then
-        device=`blkid | grep LABEL=\"$label\" | awk -F: '{print $1}'`
+        device=`blkid -L $label`
     elif [ -z "$device" ] || ! blkid | grep -q ^$device; then
         return
     fi

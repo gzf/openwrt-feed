@@ -24,7 +24,7 @@ define Package/incron
   TITLE:=Cron-like daemon which handles filesystem events
   MAINTAINER:=Zhifeng Gu <guzhifeng1979@hotmail.com>
   URL:=http://inotify.aiken.cz/
-  DEPENDS:=+uclibcxx
+  DEPENDS:=+uclibcxx 
 endef
 
 define Package/incron/description
@@ -38,7 +38,7 @@ endef
 
 MAKE_VARS += \
 	CXXFLAGS="$$$$CXXFLAGS -fno-builtin -nostdinc++ -I$(STAGING_DIR)/usr/include/uClibc++" \
-	LDFLAGS="$$$$LDFLAGS -nodefaultlibs -luClibc++"
+	LDFLAGS="$$$$LDFLAGS -nodefaultlibs -luClibc++ -lgcc_s -lc"
 
 #MAKE_FLAGS += \
 	CXX=g++-uc

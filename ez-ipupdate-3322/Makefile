@@ -14,6 +14,7 @@ PKG_RELEASE:=3
 PKG_SOURCE:=ez-ipupdate-$(PKG_VERSION).tgz
 PKG_SOURCE_URL:=http://www.3322.net/download
 PKG_MD5SUM:=d277ae99ee34eed3956207d9a6dabbb7
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -34,6 +35,7 @@ endef
 
 define Build/Prepare
 	gzip -dc $(DL_DIR)/$(PKG_SOURCE) | tar -C $(PKG_BUILD_DIR) -x --strip-components=1
+	$(call Build/Patch)
 endef
 
 define Package/ez-ipupdate-3322/conffiles

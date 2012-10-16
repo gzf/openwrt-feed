@@ -11,7 +11,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=autofs
 PKG_VERSION:=5.0.5
-PKG_RELEASE:=3~bf
+PKG_RELEASE:=3
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=http://www.kernel.org/pub/linux/daemons/autofs/v5
@@ -39,7 +39,7 @@ endef
 
 define Package/autofs5
   $(call Package/autofs5/common)
-  DEPENDS+= +kmod-fs-autofs4 +libpthread
+  DEPENDS+= +kmod-fs-autofs4 +libpthread +librpc +blkid
 endef
 
 define Package/autofs5/description
@@ -68,8 +68,10 @@ define Package/autofs5/conffiles
 endef
 
 CONFIGURE_ARGS += --with-E2FSCK=/usr/sbin/e2fsck \
-				--with-E3FSCK=/usr/sbin/e2fsck \
-				--with-E4FSCK=/usr/sbin/e2fsck
+			--with-E3FSCK=/usr/sbin/e2fsck \
+			--with-E4FSCK=/usr/sbin/e2fsck \
+			--with-openldap=no \
+			--with-sasl=no
 
 define Package/autofs5/install
 	$(INSTALL_DIR) $(1)/usr/sbin
