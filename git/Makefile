@@ -17,54 +17,106 @@ PKG_MD5SUM:=91e01a22032f5d0ca2941ae7fd49d587
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
+PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/git
+define Package/git/Common
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Version Control Systems
-  DEPENDS:=+libopenssl +libpthread
   TITLE:=The fast version control system
   URL:=http://git-scm.com
 endef
 
+define Package/git
+  $(call Package/git/Common)
+  DEPENDS:=+libopenssl +libpthread
+  TITLE+= (buildin commands)
+endef
+
+define Package/git-remote-curl
+  $(call Package/git/Common)
+  DEPENDS:=+git +libcurl +libexpat
+  TITLE+= (http[s]/ftp[s] helpers)
+endef
+
+define Package/git-http-fetch
+  $(call Package/git/Common)
+  DEPENDS:=+git +libcurl
+  TITLE+= (http-fetch)
+endef
+
+define Package/git-http-push
+  $(call Package/git/Common)
+  DEPENDS:=+git +libcurl +libexpat
+  TITLE+= (http-push)
+endef
+
+FL-git-remote-curl := git-remote-http git-remote-https \
+		 		 	 git-remote-ftp git-remote-ftps
+FL-git-http-fetch := git-http-fetch
+FL-git-http-push  := git-http-push
+
+# compile configuration
+MAKE_FLAGS := NO_INSTALL_HARDLINKS=YesPlease
+
+# description configuration
 define Package/git/description
  Git is a free & open source, distributed version control system
  designed to handle everything from small to very large projects
- with speed and efficiency.
+ with speed and efficiency. This package contains all buildin commands.
 endef
 
-MAKE_FLAGS := \
-	CC="$(TARGET_CC)" \
-	CFLAGS="$(TARGET_CFLAGS)" \
-	CPPFLAGS="$(TARGET_CPPFLAGS)" \
-	LDFLAGS="$(TARGET_LDFLAGS)" \
-	NO_CURL="YesPlease" \
-	NO_EXPAT="YesPlease" \
-	NO_MKSTEMPS="YesPlease" \
-	NO_GETTEXT="YesPlease" \
-	NO_UNIX_SOCKETS="YesPlease" \
-	NO_IPV6="YesPlease" \
-	NO_ICONV="YesPlease" \
-	NO_NSEC="YesPlease" \
-	NO_PERL="YesPlease" \
-	NO_PYTHON="YesPlease" \
-	NO_TCLTK="YesPlease"
-
-define Build/Configure
-	$(MAKE) -C $(PKG_BUILD_DIR) \
-		configure
-
-	( cd $(PKG_BUILD_DIR); \
-		./configure --prefix=/usr \
-	);
+define DescriptionTempalte
+define Package/$(1)/description
+ This package contains:
+  $(FL-$(1))
 endef
+endef
+
+$(eval $(call DescriptionTempalte,git-remote-curl))
+$(eval $(call DescriptionTempalte,git-http-fetch))
+$(eval $(call DescriptionTempalte,git-http-push))
+
+# install configuration
+GIT_CORE := usr/lib/git-core
 
 define Package/git/install
-	$(INSTALL_DIR) $(1)
-	$(RM) $(PKG_INSTALL_DIR)/usr/bin/git-cvsserver
-	$(CP) $(PKG_INSTALL_DIR)/* $(1)/
+	$(INSTALL_DIR) $(1)/usr/bin
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/git  $(1)/usr/bin
+	for FILE in $(PKG_INSTALL_DIR)/usr/bin/*; do \
+		if [ -h $$$$FILE ] && [ `readlink $$$$FILE` = git ]; then \
+			$(CP) $$$$FILE $(1)/usr/bin; \
+		fi; \
+	done
+	$(INSTALL_DIR) $(1)/usr/lib
+	for FILE in $(PKG_INSTALL_DIR)/usr/lib/lib*.so*; do \
+		$(CP) $$$$FILE $(1)/usr/lib; \
+	done
+	$(INSTALL_DIR) $(1)/$(GIT_CORE)
+	$(CP) $(PKG_INSTALL_DIR)/$(GIT_CORE)/git  $(1)/$(GIT_CORE)
+	for FILE in $(PKG_INSTALL_DIR)/$(GIT_CORE)/*; do \
+		if [ -h $$$$FILE ] && [ `readlink $$$$FILE` = git ]; then \
+			$(CP) $$$$FILE $(1)/$(GIT_CORE); \
+		fi; \
+	done
 endef
 
+define InstallTemplate
+define Package/$(1)/install
+	$(INSTALL_DIR) $$(1)/$(GIT_CORE)
+	for FILE in $(FL-$(1)); do \
+		$(CP) $(PKG_INSTALL_DIR)/$(GIT_CORE)/$$$$$$$$FILE  $$(1)/$(GIT_CORE); \
+	done
+endef
+endef
+
+$(eval $(call InstallTemplate,git-remote-curl))
+$(eval $(call InstallTemplate,git-http-fetch))
+$(eval $(call InstallTemplate,git-http-push))
+
 $(eval $(call BuildPackage,git))
+$(eval $(call BuildPackage,git-remote-curl))
+$(eval $(call BuildPackage,git-http-fetch))
+$(eval $(call BuildPackage,git-http-push))
