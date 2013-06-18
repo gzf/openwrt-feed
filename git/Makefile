@@ -85,6 +85,7 @@ GIT_CORE := usr/lib/git-core
 define Package/git/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/git  $(1)/usr/bin
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/git-upload-pack  $(1)/usr/bin
 	for FILE in $(PKG_INSTALL_DIR)/usr/bin/*; do \
 		if [ -h $$$$FILE ] && [ `readlink $$$$FILE` = git ]; then \
 			$(CP) $$$$FILE $(1)/usr/bin; \
