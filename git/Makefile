@@ -9,11 +9,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
 PKG_VERSION:=1.7.11.2
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://git-core.googlecode.com/files/
-PKG_MD5SUM:=91e01a22032f5d0ca2941ae7fd49d587
+PKG_SOURCE_URL:=git://github.com/git/git.git
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_VERSION:=v$(PKG_VERSION)
+PKG_SOURCE_PROTO:=git
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -81,6 +83,7 @@ $(eval $(call DescriptionTempalte,git-http-push))
 
 # install configuration
 GIT_CORE := usr/lib/git-core
+GIT_CORE_SHARE := usr/share/git-core
 
 define Package/git/install
 	$(INSTALL_DIR) $(1)/usr/bin
@@ -102,6 +105,8 @@ define Package/git/install
 			$(CP) $$$$FILE $(1)/$(GIT_CORE); \
 		fi; \
 	done
+	$(INSTALL_DIR) $(1)/$(GIT_CORE_SHARE)
+	$(CP) $(PKG_INSTALL_DIR)/$(GIT_CORE_SHARE)/templates $(1)/$(GIT_CORE_SHARE)
 endef
 
 define InstallTemplate
