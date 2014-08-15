@@ -1,0 +1,31 @@
+Index: b/Makefile
+===================================================================
+--- a/Makefile
++++ b/Makefile
+@@ -919,9 +919,10 @@
+ # because maintaining the nesting to match is a pain.  If
+ # we had "elif" things would have been much nicer...
+ 
+-ifeq ($(uname_M),x86_64)
+-	XDL_FAST_HASH = YesPlease
+-endif
++# xdiff/xutils.c will decide whether enable this feature by 
++# checking the endiness of target system
++XDL_FAST_HASH = YesPlease
++
+ ifeq ($(uname_S),OSF1)
+ 	# Need this for u_short definitions et al
+ 	BASIC_CFLAGS += -D_OSF_SOURCE
+Index: b/xdiff/xutils.c
+===================================================================
+--- a/xdiff/xutils.c
++++ b/xdiff/xutils.c
+@@ -249,7 +249,7 @@
+ 	return ha;
+ }
+ 
+-#ifdef XDL_FAST_HASH
++#if defined(XDL_FAST_HASH) && (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN)
+ 
+ #define REPEAT_BYTE(x)  ((~0ul / 0xff) * (x))
+ 
