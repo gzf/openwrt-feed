@@ -2,7 +2,7 @@ Index: b/configure.ac
 ===================================================================
 --- a/configure.ac
 +++ b/configure.ac
-@@ -784,56 +784,15 @@
+@@ -787,56 +787,15 @@
  #
  # Define FREAD_READS_DIRECTORIES if your are on a system which succeeds
  # when attempting to read from an fopen'ed directory.

@@ -2,7 +2,7 @@ Index: b/Makefile
 ===================================================================
 --- a/Makefile
 +++ b/Makefile
-@@ -340,6 +340,7 @@
+@@ -344,6 +344,7 @@
  prefix = $(HOME)
  bindir_relative = bin
  bindir = $(prefix)/$(bindir_relative)
@@ -10,7 +10,7 @@ Index: b/Makefile
  mandir = share/man
  infodir = share/info
  gitexecdir = libexec/git-core
-@@ -355,7 +356,7 @@
+@@ -359,7 +360,7 @@
  # DESTDIR=
  pathsep = :
  
@@ -19,7 +19,7 @@ Index: b/Makefile
  
  CC = cc
  AR = ar
-@@ -904,7 +905,7 @@
+@@ -909,7 +910,7 @@
  BUILTIN_OBJS += builtin/verify-tag.o
  BUILTIN_OBJS += builtin/write-tree.o
  
@@ -27,8 +27,8 @@ Index: b/Makefile
 +GITLIBS = libgit.so.$(GIT_VERSION)
  EXTLIBS =
  
- #
-@@ -1879,6 +1880,7 @@
+ GIT_USER_AGENT = git/$(GIT_VERSION)
+@@ -1886,6 +1887,7 @@
  DESTDIR_SQ = $(subst ','\'',$(DESTDIR))
  bindir_SQ = $(subst ','\'',$(bindir))
  bindir_relative_SQ = $(subst ','\'',$(bindir_relative))
@@ -36,7 +36,7 @@ Index: b/Makefile
  mandir_SQ = $(subst ','\'',$(mandir))
  infodir_SQ = $(subst ','\'',$(infodir))
  localedir_SQ = $(subst ','\'',$(localedir))
-@@ -1975,9 +1977,9 @@
+@@ -2027,9 +2029,9 @@
  	'-DGIT_MAN_PATH="$(mandir_SQ)"' \
  	'-DGIT_INFO_PATH="$(infodir_SQ)"'
  
@@ -47,9 +47,9 @@ Index: b/Makefile
 +	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ executable.c \
 +		$(ALL_LDFLAGS) $(LIBS)
  
- help.sp help.o: common-cmds.h
+ help.sp help.s help.o: common-cmds.h
  
-@@ -2308,11 +2310,10 @@
+@@ -2363,11 +2365,10 @@
  	$(QUIET_LINK)$(CC) $(ALL_CFLAGS) -o $@ $(ALL_LDFLAGS) $(filter %.o,$^) \
  		$(LIBS) $(CURL_LIBCURL) $(EXPAT_LIBEXPAT)
  
@@ -65,7 +65,7 @@ Index: b/Makefile
  
  $(VCSSVN_LIB): $(VCSSVN_OBJS)
  	$(QUIET_AR)$(RM) $@ && $(AR) rcs $@ $(VCSSVN_OBJS)
-@@ -2557,6 +2558,8 @@
+@@ -2621,6 +2622,8 @@
  
  install: all
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(bindir_SQ)'
@@ -74,7 +74,7 @@ Index: b/Makefile
  	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
  	$(INSTALL) $(ALL_PROGRAMS) '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
  	$(INSTALL) -m 644 $(SCRIPT_LIB) '$(DESTDIR_SQ)$(gitexec_instdir_SQ)'
-@@ -2591,6 +2594,7 @@
+@@ -2655,6 +2658,7 @@
  		$(RM) "$$execdir/$$p" && \
  		test -z "$(NO_INSTALL_HARDLINKS)$(NO_CROSS_DIRECTORY_HARDLINKS)" && \
  		ln "$$bindir/$$p" "$$execdir/$$p" 2>/dev/null || \
@@ -97,7 +97,7 @@ Index: b/git.c
 ===================================================================
 --- a/git.c
 +++ b/git.c
-@@ -529,7 +529,7 @@
+@@ -528,7 +528,7 @@
  }
  
  

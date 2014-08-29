@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
-PKG_VERSION:=1.7.11.2
-PKG_RELEASE:=4
+PKG_VERSION:=1.7.12.4
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/git/git.git
