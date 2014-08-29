@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
 PKG_VERSION:=1.7.11.2
-PKG_RELEASE:=3
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/git/git.git
@@ -18,7 +18,6 @@ PKG_SOURCE_VERSION:=v$(PKG_VERSION)
 PKG_SOURCE_PROTO:=git
 
 PKG_INSTALL:=1
-PKG_BUILD_PARALLEL:=1
 PKG_FIXUP:=autoreconf
 
 include $(INCLUDE_DIR)/package.mk

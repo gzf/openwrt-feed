@@ -2,7 +2,7 @@ Index: b/Makefile
 ===================================================================
 --- a/Makefile
 +++ b/Makefile
-@@ -919,9 +919,10 @@
+@@ -916,9 +916,10 @@
  # because maintaining the nesting to match is a pain.  If
  # we had "elif" things would have been much nicer...
  
