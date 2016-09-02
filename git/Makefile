@@ -9,7 +9,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=git
 PKG_VERSION:=1.7.12.4
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=git://github.com/git/git.git
@@ -53,6 +53,13 @@ define Package/git-http-push
   DEPENDS:=+git +libcurl +libexpat
   TITLE+= (http-push)
 endef
+
+FL-git := git-add--interactive git-am git-fast-import \
+	git-filter-branch git-lost-found git-merge-octopus git-merge-one-file \
+	git-merge-resolve git-mergetool git-mergetool--lib git-parse-remote \
+	git-pull git-quiltimport git-rebase git-repack git-request-pull \
+	git-sh-i18n git-sh-i18n--envsubst git-show-index git-stash \
+	git-submodule git-sh-setup git-bisect
 
 FL-git-remote-curl := git-remote-http git-remote-https \
 		 		 	 git-remote-ftp git-remote-ftps
@@ -103,6 +110,9 @@ define Package/git/install
 		if [ -h $$$$FILE ] && [ `readlink $$$$FILE` = git ]; then \
 			$(CP) $$$$FILE $(1)/$(GIT_CORE); \
 		fi; \
+	done
+	for FILE in $(FL-git); do \
+		$(CP) $(PKG_INSTALL_DIR)/$(GIT_CORE)/$$$$FILE $(1)/$(GIT_CORE); \
 	done
 	$(INSTALL_DIR) $(1)/$(GIT_CORE_SHARE)
 	$(CP) $(PKG_INSTALL_DIR)/$(GIT_CORE_SHARE)/templates $(1)/$(GIT_CORE_SHARE)
