@@ -28,7 +28,7 @@ AUTOFS_EXT2_MODS := mount_ext2.so mount_ext3.so mount_ext4.so
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/autofs5/common
+define Package/autofs/common
   SECTION:=utils
   CATEGORY:=Utilities
   SUBMENU:=Filesystem
@@ -37,12 +37,12 @@ define Package/autofs5/common
   URL:=http://www.kernel.org/pub/linux/daemons/autofs/
 endef
 
-define Package/autofs5
-  $(call Package/autofs5/common)
-  DEPENDS+= +kmod-fs-autofs4 +libpthread +librpc +blkid
+define Package/autofs
+  $(call Package/autofs/common)
+  DEPENDS+= +kmod-fs-autofs4 +libpthread +libtirpc +blkid
 endef
 
-define Package/autofs5/description
+define Package/autofs/description
   Autofs controls the operation of the automount daemons. The
   automount daemons automatically mount filesystems when they
   are used and unmount them after a period of inactivity. This
@@ -54,26 +54,30 @@ define Package/autofs5/description
 endef
 
 
-define Package/autofs5-mount-ext2
-  $(call Package/autofs5/common)
-  DEPENDS+= +autofs5 +e2fsprogs
+define Package/autofs-mount-ext2
+  $(call Package/autofs/common)
+  DEPENDS+= +autofs +e2fsprogs
 endef
 
-define Package/autofs5-mount-ext2/description
+define Package/autofs-mount-ext2/description
   This module enables fsck when mounting ext2/3/4 filesystems.
 endef
 
-define Package/autofs5/conffiles
+define Package/autofs/conffiles
 /etc/config/autofs
 endef
 
-CONFIGURE_ARGS += --with-E2FSCK=/usr/sbin/e2fsck \
+CONFIGURE_ARGS += --with-path=$(STAGING_DIR_HOST)/bin:/usr/bin:/bin:/usr/sbin:/sbin \
+			--with-E2FSCK=/usr/sbin/e2fsck \
 			--with-E3FSCK=/usr/sbin/e2fsck \
 			--with-E4FSCK=/usr/sbin/e2fsck \
+			--with-libtirpc \
 			--with-openldap=no \
 			--with-sasl=no
+TARGET_CFLAGS += -std=gnu89 -D__SWORD_TYPE=int -D__S_IEXEC=S_IXUSR
+TARGET_CPPFLAGS += -I$(STAGING_DIR)/usr/include/tirpc
 
-define Package/autofs5/install
+define Package/autofs/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/automount $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/usr/lib/autofs
@@ -92,12 +96,12 @@ define Package/autofs5/install
 	ln -sf /tmp/auto.master $(1)/etc/
 endef
 
-define Package/autofs5-mount-ext2/install
+define Package/autofs-mount-ext2/install
 	$(INSTALL_DIR) $(1)/usr/lib/autofs
 	for MOD in $(AUTOFS_EXT2_MODS); do \
 		$(CP) $(PKG_INSTALL_DIR)/usr/lib/autofs/$$$$MOD $(1)/usr/lib/autofs/; \
 	done
 endef
 
-$(eval $(call BuildPackage,autofs5))
-$(eval $(call BuildPackage,autofs5-mount-ext2))
+$(eval $(call BuildPackage,autofs))
+$(eval $(call BuildPackage,autofs-mount-ext2))
